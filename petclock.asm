@@ -311,16 +311,20 @@ UpdateClock
 
                 cmp #'3'                ; If the ONES digit is < 3, nothing to do
                 bcc +
-                dec HourTens            ; But otherwise we back up 12 hours
+BackUpTwelve    dec HourTens            ; But otherwise we back up 12 hours
 
                 dec HourDigits
                 dec HourDigits
 ZeroInTens      rts
 
-TwoInTens       lda #'0'                ; To go back 12 hours we go back 20 in the
+TwoInTens       cmp #'2'                ; If Ones digit is < 2, subtract 20 and add 8
+		bcc AddEight            ; Otherwise, backup 10 and backup 2 hours
+		jmp BackUpTwelve
+		
+AddEight        lda #'0'                ; To go back 12 hours we zero the
                 sta HourTens            ;  tens portion and add 8 to the digits
                 lda HourDigits
-                clc
+	        clc
                 adc #8
                 sta HourDigits
                 rts
